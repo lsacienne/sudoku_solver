@@ -55,3 +55,31 @@ def getVariables(lines,variables):
         for case in line:
             if(case.checkIsVariable()):
                 variables.append(case)
+    return variables
+
+def getSystemLine(line,variables):
+    solution = 45
+    lineOfMatrix = [0 for i in range(len(variables))]
+    for case in line:
+        solution -= case.value
+        if case in variables:
+            lineOfMatrix[variables.index(case)] = 1
+    
+    return cl.NumpyLine(lineOfMatrix,solution)
+
+def getOneMatrix(scannedMatrix,oneMatrix,solution,variables):
+    for line in scannedMatrix:
+        temp = getSystemLine(line,variables)
+        if(1 in temp.oneLine):
+            oneMatrix.append(temp.oneLine.copy())
+            solution.append(temp.solution)
+    
+def getSystemMatrix(lineMatrix,columnsMatrix,squareMatrix,variables):
+    oneMatrix = []
+    solution = []
+
+    getOneMatrix(lineMatrix,oneMatrix,solution,variables)
+    getOneMatrix(columnsMatrix,oneMatrix,solution,variables)
+    getOneMatrix(squareMatrix,oneMatrix,solution,variables)
+
+    return cl.NumpySystem(oneMatrix,solution)

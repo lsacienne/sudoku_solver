@@ -8,9 +8,22 @@ lines = fm.getLines("helloBoi.txt")
 columns = fm.getColumns(lines)
 squares = fm.getSquares(lines)
 
+#Prints in the command line
 fd.printMatrixWithTitle(lines,"lines")
 fd.printMatrixWithTitle(columns,"columns")
 fd.printMatrixWithTitle(squares,"squares")
-
-fm.getVariables(lines,variables)
+variables = fm.getVariables(lines,variables)
 print(variables)
+
+matrix = fm.getSystemMatrix(lines,columns,squares,variables)
+fd.printMatrixWithTitle(matrix.oneMatrix, "oneMatrix")
+print("solutionVector : \n",matrix.solutionVector)
+
+oneMatrix = np.array(matrix.oneMatrix)
+solutionVector = np.array(matrix.solutionVector)
+print(len(matrix.oneMatrix))
+print(len(matrix.oneMatrix[0]))
+print(len(matrix.solutionVector))
+x = np.linalg.solve(oneMatrix,solutionVector)
+
+print(x)
