@@ -1,4 +1,6 @@
 import classes as cl
+import fonctions_debug as fd
+import random as rand
 
 
 def getLines(fileName):
@@ -83,3 +85,73 @@ def getSystemMatrix(lineMatrix,columnsMatrix,squareMatrix,variables):
     getOneMatrix(squareMatrix,oneMatrix,solution,variables)
 
     return cl.NumpySystem(oneMatrix,solution)
+
+
+
+def travelVariables(variables,matrix):
+    cur_line = []
+    for variable in variables:
+        for line in matrix:
+            if variable in line:
+                cur_line = line
+                break
+        if len(cur_line) != 0:
+            for number in cur_line:
+                if(number.value in variable.possibilities):
+                    del(variable.possibilities[variable.possibilities.index(number.value)])
+        if(len(variable.possibilities) == 1):
+            variable.value = variable.possibilities[0]
+            del(variable.possibilities[0])
+            del(variables[variables.index(variable)])
+
+def solveSudoku(variables,lines,columns,squares):
+    lines_copy = []
+    columns_copy = []
+    squares_copy = []
+    iterations = 0
+    wait = 0
+    variables_length = len(variables)
+    previous_variables_length = 0
+    while(len(variables) > 0):
+        iterations+=1
+        previous_variables_length = variables_length
+
+        travelVariables(variables,lines)
+        travelVariables(variables,columns)
+        travelVariables(variables,squares)
+
+        variables_length = len(variables)
+        print("line ",iterations," :\n")
+        if(variables_length == previous_variables_length):
+            wait+=1
+        else:
+            wait=0
+            fd.printMatrix(lines)
+
+        if(wait > 5):
+            lines_copy = makeGridCopy(lines)
+            columns_copy = makeGridCopy(columns)
+            squares_copy = makeGridCopy(squares)
+            chooseWisely(variables)       
+    return lines
+
+
+def makeGridCopy(matrix):
+    matrix_copy = []
+    for row in matrix:
+        matrix_copy.append(row.copy())
+    return matrix_copy
+
+def chooseWisely(variables):
+    chosen = variables[0]
+    for variable in variables:
+        print(len(variable.possibilities))
+        print(len(chosen.possibilities))
+        if((len(variable.possibilities) < len(chosen.possibilities) and len(variable.possibilities) > 0) or len(chosen.possibilities) <= 0):
+            chosen = variable
+    print(len(chosen.possibilities))
+    index_number_chosen = rand.randrange(0,len(chosen.possibilities),1)
+    chosen.value = chosen.possibilities[index_number_chosen]
+    chosen.possibilities.clear()
+    
+

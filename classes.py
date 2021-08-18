@@ -3,6 +3,10 @@ class Case:
         self.value = value
         self.x = x_coord
         self.y = y_coord
+        if self.checkIsVariable():
+            self.possibilities = [1,2,3,4,5,6,7,8,9]
+        else:
+            self.possibilities = []
     
     def __str__(self) -> str:
         return str(self.value)
@@ -11,7 +15,7 @@ class Case:
 
 
     def checkIsVariable(self) -> bool:
-        return self.value == 0
+        return self.value == 0    
 
 class NumpyLine:
     def __init__(self,oneLine,solution) -> None:
