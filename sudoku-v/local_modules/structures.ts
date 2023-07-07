@@ -118,6 +118,11 @@ export class Problem {
         let lines = this.lins.map(lin => lin.cells.map(cell => cell.value));
         console.log(lines);
     }
+
+    printDenseSolution() {
+        let out = this.lins.map(lin => lin.cells.map(cell => cell.value?.toString()).join(' ')).join('\n');
+        console.log(out);
+    }
     /* Copy */
     copy(): Problem {
         let newProblem = new Problem();
