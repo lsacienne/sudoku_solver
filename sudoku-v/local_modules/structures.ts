@@ -169,4 +169,21 @@ export class Problem {
         }
         return true;
     }
+    countValuesArray(arr: Array<(number | null)>): Map<number, number> {
+        const counts: Map<number, number> = new Map();
+        arr.forEach(
+            function (x) {
+                if (x !== null) {
+                    let val = counts.get(x);
+                    if (val !== undefined) {
+                        counts.set(x, val + 1);
+                    } else {
+                        counts.set(x, 1);
+                    }
+                }
+            }
+        );
+
+        return counts;
+    }
 }
