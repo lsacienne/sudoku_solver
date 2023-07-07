@@ -22,6 +22,10 @@ export class Cell {
     setValue(value: number) {
         this.value = value;
     }
+
+    copy() {
+        return new Cell(this.value, this.index);
+    }
 }
 
 class C {
@@ -113,5 +117,15 @@ export class Problem {
     printProblem() {
         let lines = this.lins.map(lin => lin.cells.map(cell => cell.value));
         console.log(lines);
+    }
+    /* Copy */
+    copy(): Problem {
+        let newProblem = new Problem();
+        this.cells.forEach(
+            function (cell) {
+                newProblem.addCell(cell.copy());
+            }
+        )
+        return newProblem;
     }
 }
