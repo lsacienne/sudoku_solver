@@ -141,4 +141,32 @@ export class Problem {
         )
         return newProblem;
     }
+
+    /* Constraints */
+    checkLine(index: number) {
+        let line = this.lins.find(lin => lin.index === index)?.cells.map(cell => cell.value);
+        let valuesCount = this.countValuesArray(line!!);
+        if (Array.from(valuesCount.values()).includes(2)) {
+            return false;
+        }
+        return true;
+    }
+
+    checkColumn(index: number) {
+        let column = this.cols.find(col => col.index === index)?.cells.map(cell => cell.value);
+        let valuesCount = this.countValuesArray(column!!);
+        if (Array.from(valuesCount.values()).includes(2)) {
+            return false;
+        }
+        return true;
+    }
+
+    checkSquare(index: number) {
+        let square = this.squs.find(squ => squ.index === index)?.cells.map(cell => cell.value);
+        let valuesCount = this.countValuesArray(square!!);
+        if (Array.from(valuesCount.values()).includes(2)) {
+            return false;
+        }
+        return true;
+    }
 }
