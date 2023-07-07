@@ -123,6 +123,14 @@ export class Problem {
         let out = this.lins.map(lin => lin.cells.map(cell => cell.value?.toString()).join(' ')).join('\n');
         console.log(out);
     }
+
+    setValue(index: number, value: number) {
+        if (this.cells[index].value !== null) {
+            throw new Error("The cell is already filled");
+        }
+        this.cells[index].setValue(value);
+    }
+
     /* Copy */
     copy(): Problem {
         let newProblem = new Problem();
