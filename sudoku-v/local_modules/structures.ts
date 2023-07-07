@@ -169,6 +169,31 @@ export class Problem {
         }
         return true;
     }
+
+    isComplete() {
+        if (this.cells.find(cell => cell.value === null)) {
+            return false;
+        }
+        return true;
+    }
+
+    isCorrect(cellId: number) {
+        const cell = this.cells.find(cel => cel.index === cellId);
+        const linId = Math.floor(cellId / 9);
+        const colId = cellId % 9;
+        const squId = Math.floor(colId / 3) + 3 * Math.floor(linId / 3)
+
+        //console.log(cell?.index, cell?.value);
+        //console.log(this.checkLine(linId));
+        //console.log(this.checkColumn(colId));
+        //console.log(this.checkSquare(squId));
+
+        if (this.checkLine(linId) && this.checkColumn(colId) && this.checkSquare(squId)) {
+            return true;
+        }
+        return false;
+    }
+
     countValuesArray(arr: Array<(number | null)>): Map<number, number> {
         const counts: Map<number, number> = new Map();
         arr.forEach(
