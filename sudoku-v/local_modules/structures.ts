@@ -211,4 +211,9 @@ export class Problem {
 
         return counts;
     }
+
+    /* Heuristics */
+    findFirstEmptyCell(): number | undefined {
+        return this.cells.find(cell => cell.value === null)?.index;
+    }
 }
