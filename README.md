@@ -66,3 +66,43 @@ They directly come from the rules of the sudoku game :
 - **Line Constraint** : {L(C_XY) = L(C_ZW); V(C_XY) != V(C_ZW)}
 - **Column Constraint** : {C(C_XY) = C(C_ZW); V(C_XY) != V(C_ZW)}
 - **Square Constraint** : {S(C_XY) = S(C_ZW); V(C_XY) != V(C_ZW)}
+
+## Strategy
+
+To solve this problem I chose to use the most basic AI algorithm existing for solving CSP : **[Generate & Test](https://en.wikipedia.org/wiki/Brute-force_search)**.
+
+This approach is pretty barbaric without the use of some heuristic but it can become really good if one choose to not generate every possible case!
+
+I chose to implement an algorithm that look like [this one by Christine SOLNON](https://perso.liris.cnrs.fr/christine.solnon/Site-PPC/session3/e-miage-ppc-sess3.htm#va_voir_1) (in french) :
+
+```
+function generateAndTest(A,(X,D,C)) : return boolean
+
+Precondition :
+(X,D,C) = A CSP on the finite domains
+A = a partial allocation for (X,D,C)
+
+Post-relationship :
+return true if the partial allocation A can be extended in one solution for (X,D,C), false otherwise
+
+Begin
+  If every variable from X are allocated to a value in A Then :    /* A est une affectation totale */
+    If A is consistent Then
+      /* A is a solution */
+      return True
+    Else
+      return False
+    EndIf
+  Else                                                             /* A est une affectation partielle */
+    choose a variable Xi of X which is not yet allocated to a value in A
+    For every value Vi that belongs to D(Xi) Do
+      If generateAndTest(A ∪ {(Xi,Vi)}, (X,D,C)) = True Then
+        return True
+      EndIf
+    EndFor
+    return False
+  EndIf
+End
+```
+
+I modified it a bit during the implementation to optimize it and not have a "super dumb" algorithm.
