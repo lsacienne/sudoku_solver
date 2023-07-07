@@ -86,14 +86,14 @@ Post-relationship :
 return true if the partial allocation A can be extended in one solution for (X,D,C), false otherwise
 
 Begin
-  If every variable from X are allocated to a value in A Then :    /* A est une affectation totale */
+  If every variable from X are allocated to a value in A Then :    /* A is a total allocation */
     If A is consistent Then
       /* A is a solution */
       return True
     Else
       return False
     EndIf
-  Else                                                             /* A est une affectation partielle */
+  Else                                                             /* A is a partial allocation */
     choose a variable Xi of X which is not yet allocated to a value in A
     For every value Vi that belongs to D(Xi) Do
       If generateAndTest(A ∪ {(Xi,Vi)}, (X,D,C)) = True Then
