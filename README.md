@@ -551,3 +551,330 @@ node index.js  7,76s user 0,10s system 104% cpu 7,502 total
 **Hooray!** The grid generated is correct! 
 
 ...But it tooks around `7,76s` to run on my machine. Let us find out if one can improve it a bit!
+
+### Second Implementation : More developed heuristic
+
+How do you play sudoku in real life ? How do you solve a sudoku ? I do not think that you just try all possible combinations until you meet one that satisifes the problem!
+
+Take this grid as example :
+
+<p align="middle">
+  <img src="./preamble/grid-example.png" width=60% />
+</p>
+
+It exists a loads of strategies to solve sudoku. Some are really straight forward and are easy to complete and some are way harder to apply for a human.
+
+| ![No Doubt situations](./preamble/no-doubt-situation.png) | ![Possible values](./preamble/possible-values.png)
+|:-----------------:|:---------:|
+| *My favorite strategy. Use the lines and/or adjacent columns to find the value in a specific cell* | *Mark down all the possible values inside a square. This method can be very messy but with only two values, it can be a game changer* |
+
+These methods are really great for human beings but not so much for computers trying to solve CSP...
+
+Something AI makers is the **attribution of wight/score**. You find weights everywhere in this domain : 
+
+- One weights edges in graphs
+- Weights rules a neural network decision
+- Weights are used in generative AI to give the best solution
+
+Anyway, when it comes to select the best solution, one likes to put a weight on it!
+
+#### Score Strategy
+
+To improve the AI, I decided to change the heuristic that chose the first cell to compute. I will try again to minimize the branches by selecting the ones that will generate less leaves.
+
+To do that, I will use a score heuristic. I will put a score on each cell and starting to compute the cell with the biggest score. This score will depend on the number of already taken values for this cell.
+
+In the following example, the focused cell has a score of `6` because the value of the cell cannot be *{3, 4, 5, 6, 7, 8}* which corresponds to **6 values**.
+
+<p align="middle">
+  <img src="./preamble/weight-strategy.png" width=60% />
+</p>
+
+The cells with a better score will have less possibilities and will, then, generate less leaves.
+
+#### Implementation
+
+For the implementation, I started by adding the score property to the cells :
+
+```ts
+class Cell {
+    value: number | null;
+    readonly index: number;
+    score: number | null;
+
+    constructor(value: null | number, index: number) {
+        this.value = value;
+        this.index = index;
+        if (this.value === null)
+            this.score = 0;
+        else
+            this.score = null;
+    }
+
+    /* ... */
+
+    setScore(score: number | null): number | null {
+        this.score = score;
+        return this.score;
+    }
+
+    /* ... */
+}
+```
+
+Then, I added methods to the problem to compute the score of a cell :
+
+```ts
+class Problem {
+    cols: Array<C>;
+    lins: Array<L>;
+    squs: Array<S>;
+    cells: Array<Cell>;
+
+    /* ... */
+
+    getSetLin(linIndex: number): Set<number | null> {
+        let line = this.lins.find(lin => lin.index === linIndex)?.cells.map(cell => cell.value);
+        return new Set(line);
+    }
+
+    getSetCol(colIndex: number): Set<number | null> {
+        let column = this.cols.find(col => col.index === colIndex)?.cells.map(cell => cell.value);
+        return new Set(column);
+    }
+
+    getSetSqu(squIndex: number): Set<number | null> {
+        let square = this.squs.find(squ => squ.index === squIndex)?.cells.map(cell => cell.value);
+        return new Set(square);
+    }
+
+    getCellScore(cellId: number): number | null {
+        const cell = this.cells.find(cel => cel.index === cellId);
+        if (cell?.value !== null) {
+            cell?.setScore(null);
+            return null;
+        }
+        const linId = Math.floor(cellId / 9);
+        const colId = cellId % 9;
+        const squId = Math.floor(colId / 3) + 3 * Math.floor(linId / 3);
+
+        let scoreSet = new Set([...this.getSetLin(linId), ...this.getSetCol(colId), ...this.getSetSqu(squId)]);
+        return cell.setScore(scoreSet.size);
+    }
+
+    /* ... */
+}
+```
+
+Finally, I added 2 methods to update the cells :
+
+- One method, used at the beginning, will compute the score of every cell
+- One second method will only compute the score of cells which are susceptible to have evolved after setting a value in a specific cell.
+
+```ts
+class Problem {
+    cols: Array<C>;
+    lins: Array<L>;
+    squs: Array<S>;
+    cells: Array<Cell>;
+
+    /* ... */
+
+    globalUpdateScore(): number | undefined {
+        let max = -1;
+        let curScore: number | null;
+        let indexMax: number | null = null;
+        for (let cell of this.cells) {
+            curScore = this.getCellScore(cell.index);
+            if (curScore !== null && curScore > max) {
+                max = curScore;
+                indexMax = cell.index;
+            }
+        }
+        return indexMax === null ? undefined : indexMax;
+    }
+
+    localUpdateScore(cellId: number) {
+        const linId = Math.floor(cellId / 9);
+        const colId = cellId % 9;
+        const squId = Math.floor(colId / 3) + 3 * Math.floor(linId / 3);
+
+        let line = this.lins.find(lin => lin.index === linId);
+        let column = this.cols.find(col => col.index === colId);
+        let square = this.squs.find(squ => squ.index === squId);
+
+        let toCompute = [...line!!.cells, ...column!!.cells, ...square!!.cells];
+
+        for (let cell of toCompute) {
+            this.getCellScore(cell.index);
+        }
+    }
+
+    /* ... */
+}
+```
+
+#### Heuristic
+
+To use all the functions previously defined, I stated an heuristic based on the score to select a cell :
+
+```ts
+class Problem {
+    cols: Array<C>;
+    lins: Array<L>;
+    squs: Array<S>;
+    cells: Array<Cell>;
+
+    /* ... */
+
+    findMostConstraints(): number | undefined {
+        let max = -1;
+        let curScore: number | null;
+        let indexMax: number | null = null;
+
+        for (let cell of this.cells) {
+            curScore = cell.score;
+            if (curScore !== null && curScore > max) {
+                max = curScore;
+                indexMax = cell.index;
+            }
+        }
+
+        return indexMax === null ? undefined : indexMax;
+    }
+
+    /* ... */
+}
+```
+
+I modified a bit the algorithm to take this new heuristic in account :
+
+```ts
+function generateAndTest2(problem: Problem, cellIndex: number | undefined): null | Problem {
+    if (!problem.isComplete()) {
+        if (cellIndex === undefined) {
+            throw new Error("The problem is already complete !");
+        }
+        for (let i = 1; i <= 9; ++i) {
+            let newPb = problem.copy();
+            newPb.setValue(cellIndex, i);
+            if (newPb.isCorrect(cellIndex)) {
+                newPb.localUpdateScore(cellIndex);
+                let nextCell = newPb.findMostConstraints();
+                let res = generateAndTest2(newPb, nextCell);
+                if (res) {
+                    return res;
+                }
+            }
+        }
+        return null;
+    } else {
+        return problem;
+    }
+}
+```
+
+During the initialization, one must compute a first time the scores of the cells :
+
+```ts
+let firstCell = problem.globalUpdateScore();
+let res = generateAndTest2(problem, firstCell);
+```
+
+#### Test and performances
+
+Now let us try this new implementation on the same grid as one has done before :
+
+```bash
+tsc index.ts --downlevelIteration   
+```
+
+```bash
+time node index.js
+```
+
+```
+[
+  [
+    null, null, null,
+    null, null, null,
+    5,    6,    null
+  ],
+  [
+    null, null, null,
+    null, 8,    null,
+    null, 4,    null
+  ],
+  [
+    null, null, 3,
+    2,    null, null,
+    null, null, 7
+  ],
+  [
+    null, null, null,
+    1,    null, null,
+    null, null, null
+  ],
+  [
+    null, 6,    4,
+    null, null, null,
+    2,    1,    null
+  ],
+  [
+    null, null, null,
+    null, 7,    null,
+    null, 8,    null
+  ],
+  [
+    null, 7,    null,
+    null, null, 5,
+    null, null, null
+  ],
+  [
+    null, null, null,
+    null, 2,    6,
+    8,    null, null
+  ],
+  [
+    null, 5,    null,
+    null, null, null,
+    4,    null, 3
+  ]
+]
+4 2 7 9 1 3 5 6 8
+9 1 5 6 8 7 3 4 2
+6 8 3 2 5 4 1 9 7
+5 9 8 1 6 2 7 3 4
+7 6 4 5 3 8 2 1 9
+1 3 2 4 7 9 6 8 5
+8 7 1 3 4 5 9 2 6
+3 4 9 7 2 6 8 5 1
+2 5 6 8 9 1 4 7 3
+node index.js  0,25s user 0,03s system 173% cpu 0,162 total
+```
+
+**Here we are!!!** One obtains the same result but in way lesser time! (`0.25s`)
+
+## Conclusion
+
+You can access the final AI (and the previous one if you want) on this website : [link](#).
+
+I am very proud of this AI, I wanted to realize it from a long time ago and I am very happy of the result. I hope this piece of code will inspire you ! 
+
+See you later!
+
+<table>
+    <thead>
+        <tr>
+            <th colspan="5">L'Sacienne</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="1" width=10%><img src="./preamble/lsacienne.png"/></td>
+            <td colspan="1" align="center">VIALA ALexandre</td>
+            <td colspan="1" align="center"><a href="https://lsacienne.github.io/portfolio/#/">My portfolio</a></td>
+            <td colspan="1" align="center"><a href="https://www.linkedin.com/in/alexandre-viala-62963521b/">My LinkedIn</a></td>
+        </tr>
+    </tbody>
+</table>
