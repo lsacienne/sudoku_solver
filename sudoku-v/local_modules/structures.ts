@@ -226,4 +226,79 @@ export class Problem {
     findFirstEmptyCell(): number | undefined {
         return this.cells.find(cell => cell.value === null)?.index;
     }
+
+    getSetLin(linIndex: number): Set<number | null> {
+        let line = this.lins.find(lin => lin.index === linIndex)?.cells.map(cell => cell.value);
+        return new Set(line);
+    }
+
+    getSetCol(colIndex: number): Set<number | null> {
+        let column = this.cols.find(col => col.index === colIndex)?.cells.map(cell => cell.value);
+        return new Set(column);
+    }
+
+    getSetSqu(squIndex: number): Set<number | null> {
+        let square = this.squs.find(squ => squ.index === squIndex)?.cells.map(cell => cell.value);
+        return new Set(square);
+    }
+
+    getCellScore(cellId: number): number | null {
+        const cell = this.cells.find(cel => cel.index === cellId);
+        if (cell?.value !== null) {
+            cell?.setScore(null);
+            return null;
+        }
+        const linId = Math.floor(cellId / 9);
+        const colId = cellId % 9;
+        const squId = Math.floor(colId / 3) + 3 * Math.floor(linId / 3);
+
+        let scoreSet = new Set([...this.getSetLin(linId), ...this.getSetCol(colId), ...this.getSetSqu(squId)]);
+        return cell.setScore(scoreSet.size);
+    }
+
+    globalUpdateScore(): number | undefined {
+        let max = -1;
+        let curScore: number | null;
+        let indexMax: number | null = null;
+        for (let cell of this.cells) {
+            curScore = this.getCellScore(cell.index);
+            if (curScore !== null && curScore > max) {
+                max = curScore;
+                indexMax = cell.index;
+            }
+        }
+        return indexMax === null ? undefined : indexMax;
+    }
+
+    localUpdateScore(cellId: number) {
+        const linId = Math.floor(cellId / 9);
+        const colId = cellId % 9;
+        const squId = Math.floor(colId / 3) + 3 * Math.floor(linId / 3);
+
+        let line = this.lins.find(lin => lin.index === linId);
+        let column = this.cols.find(col => col.index === colId);
+        let square = this.squs.find(squ => squ.index === squId);
+
+        let toCompute = [...line!!.cells, ...column!!.cells, ...square!!.cells];
+
+        for (let cell of toCompute) {
+            this.getCellScore(cell.index);
+        }
+    }
+
+    findMostConstraints(): number | undefined {
+        let max = -1;
+        let curScore: number | null;
+        let indexMax: number | null = null;
+
+        for (let cell of this.cells) {
+            curScore = cell.score;
+            if (curScore !== null && curScore > max) {
+                max = curScore;
+                indexMax = cell.index;
+            }
+        }
+
+        return indexMax === null ? undefined : indexMax;
+    }
 }
