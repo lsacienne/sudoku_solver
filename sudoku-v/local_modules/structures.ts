@@ -1,10 +1,15 @@
 export class Cell {
     value: number | null;
     readonly index: number;
+    score: number | null;
 
     constructor(value: null | number, index: number) {
         this.value = value;
         this.index = index;
+        if (this.value === null)
+            this.score = 0;
+        else
+            this.score = null;
     }
 
     computeCol(): number {
@@ -21,6 +26,11 @@ export class Cell {
 
     setValue(value: number) {
         this.value = value;
+    }
+
+    setScore(score: number | null): number | null {
+        this.score = score;
+        return this.score;
     }
 
     copy() {
