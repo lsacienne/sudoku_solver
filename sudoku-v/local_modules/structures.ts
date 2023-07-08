@@ -191,7 +191,7 @@ export class Problem {
         const cell = this.cells.find(cel => cel.index === cellId);
         const linId = Math.floor(cellId / 9);
         const colId = cellId % 9;
-        const squId = Math.floor(colId / 3) + 3 * Math.floor(linId / 3)
+        const squId = Math.floor(colId / 3) + 3 * Math.floor(linId / 3);
 
         //console.log(cell?.index, cell?.value);
         //console.log(this.checkLine(linId));
