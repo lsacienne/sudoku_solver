@@ -30,9 +30,6 @@ jobs:
         run: npm i
       - name: Set Creds
         run: git config user.name "lsacienne" && git config user.email "alexandre.viala@outlook.com"
-      - name: Build
-        working-directory: ./sudoku-v-online
-        run: npm run build
       - name: Deploy
         working-directory: ./sudoku-v-online
         run: npm run deploy
