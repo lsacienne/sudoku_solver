@@ -11,6 +11,7 @@
   "dependencies": {
     "@vue/compiler-sfc": "^3.3.4",
     "core-js": "^3.8.3",
+    "execa": "^7.1.1",
     "vue": "^3.2.26"
   },
   "devDependencies": {
