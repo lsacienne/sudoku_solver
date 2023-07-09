@@ -9,11 +9,11 @@ import fs from "fs"
         await execa("npm", ["run", "build"]);
         // await execa("yarn", ["build"]);
         // Understand if it's dist or build folder
-        const folderName = fs.existsSync("dist") ? "dist" : "build";
-        await execa("git", ["--work-tree", folderName, "add", "--all"]);
-        await execa("git", ["--work-tree", folderName, "commit", "-m", "gh-pages"]);
+        const folderName = "./sudoku-v-online/".concat(fs.existsSync("dist") ? "dist" : "build");
+        await execa("git", ["--work-tree", folderName, "add", "--all"], { cwd: '..' });
+        await execa("git", ["--work-tree", folderName, "commit", "-m", "gh-pages"], { cwd: '..' });
         console.log("Pushing to gh-pages...");
-        await execa("git", ["--git-dir=../.git", "subtree", "split", "--prefix", "dist", "main"]);
+        await execa("git", ["subtree", "split", "--prefix", "./sudoku-v-online/dist", "main"], { cwd: '..' });
         await execa("git", ["push", "origin", `HEAD:gh-pages`, "--force"]);
         await execa("rm", ["-r", folderName]);
         await execa("git", ["checkout", "-f", "main"]);
