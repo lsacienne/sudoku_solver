@@ -5,7 +5,6 @@ import fs from "fs"
     try {
         await execa("git", ["checkout", "--orphan", "gh-pages"]);
         // eslint-disable-next-line no-console
-        await execa("cd", ["../sudoku-v-online"]);
         console.log("Building started...");
         await execa("npm", ["run", "build"]);
         // await execa("yarn", ["build"]);
