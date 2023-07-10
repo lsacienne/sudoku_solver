@@ -53,18 +53,18 @@ export default defineComponent({
     background-color: rgb(1, 20, 37);
     box-shadow: 1vw 1vw 0 rgb(8, 85, 151);
     display: grid;
-    width: 90%;
+    width: 100%;
     aspect-ratio: 1 / 1;
-    grid-template-columns: repeat(9, 10.5%);
-    grid-template-rows: repeat(9, 10.5%);
+    grid-template-columns: repeat(9, 9.2%);
+    grid-template-rows: repeat(9, 9.2%);
     grid-gap: 5px;
     place-content: center;
-    border-radius: 1.5rem;
+    border-radius: 3vw;
 }
 
 .cell {
     border: none;
-    border-radius: .5rem;
+    border-radius: 1vw;
     background-color: aliceblue;
     display: flex;
     flex-direction: row;
