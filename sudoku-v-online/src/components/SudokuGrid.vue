@@ -83,6 +83,22 @@ export default defineComponent({
     border: none;
 }
 
+@media (min-width: 1000px) {
+    .grid-container {
+        width: 60%;
+        grid-template-columns: repeat(9, 9.8%);
+        grid-template-rows: repeat(9, 9.8%);
+        border-radius: 1.5vw;
+        grid-gap: 10px;
+    }
+
+    .cell>input {
+        font-size: 3vw;
+    }
+
+
+}
+
 .left {
     border-left: none;
 }
