@@ -83,17 +83,30 @@ export default defineComponent({
     border: none;
 }
 
-@media (min-width: 1000px) {
+@media(min-width: 500px) {
     .grid-container {
-        width: 60%;
         grid-template-columns: repeat(9, 9.8%);
         grid-template-rows: repeat(9, 9.8%);
-        border-radius: 1.5vw;
-        grid-gap: 10px;
+    }
+}
+
+@media (min-aspect-ratio: 4/3) and (min-width: 1200px) {
+    .grid-container {
+        width: 50vh;
+        height: 50vh;
+        grid-template-columns: repeat(9, 9.5%);
+        grid-template-rows: repeat(9, 9.5%);
+        box-shadow: .5vw .5vw 0 rgb(8, 85, 151);
+        border-radius: 1.5vh;
+        grid-gap: 7px;
+    }
+
+    .cell {
+        border-radius: .5vh;
     }
 
     .cell>input {
-        font-size: 3vw;
+        font-size: 2VW;
     }
 
 
