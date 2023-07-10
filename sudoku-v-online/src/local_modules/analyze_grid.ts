@@ -13,7 +13,7 @@ export function fillGrid(input: Array<string>): Problem {
     const problem = new Problem();
     let index = 0;
     for (const cell of input) {
-        const convertedCellValue: number | null = isNaN(+cell) || !(+cell > 0 && +cell < 9) ? null : +cell;
+        const convertedCellValue: number | null = isNaN(+cell) || !(+cell > 0 && +cell <= 9) ? null : +cell;
         problem.addCell(new Cell(convertedCellValue, index));
         index++;
     }

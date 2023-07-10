@@ -31,7 +31,7 @@ export default defineComponent({
     methods: {
         async runAI(inputArray: Array<string>) {
             const problem: Problem = fillGrid(inputArray);
-            problem.printDenseSolution();
+            //problem.printDenseSolution();
             let toResolve = new Promise<Problem>((resolve, reject) => {
                 const firstCell = problem.globalUpdateScore();
                 const solution: Problem | null = ai.generateAndTest2(problem, firstCell);
