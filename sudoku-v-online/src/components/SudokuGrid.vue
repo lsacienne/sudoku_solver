@@ -53,18 +53,18 @@ export default defineComponent({
     background-color: rgb(1, 20, 37);
     box-shadow: 1vw 1vw 0 rgb(8, 85, 151);
     display: grid;
-    width: 90%;
+    width: 100%;
     aspect-ratio: 1 / 1;
-    grid-template-columns: repeat(9, 10.5%);
-    grid-template-rows: repeat(9, 10.5%);
+    grid-template-columns: repeat(9, 9.2%);
+    grid-template-rows: repeat(9, 9.2%);
     grid-gap: 5px;
     place-content: center;
-    border-radius: 1.5rem;
+    border-radius: 3vw;
 }
 
 .cell {
     border: none;
-    border-radius: .5rem;
+    border-radius: 1vw;
     background-color: aliceblue;
     display: flex;
     flex-direction: row;
@@ -81,6 +81,35 @@ export default defineComponent({
     color: rgb(1, 21, 39);
     background-color: rgba(0, 0, 0, 0);
     border: none;
+}
+
+@media(min-width: 500px) {
+    .grid-container {
+        grid-template-columns: repeat(9, 9.8%);
+        grid-template-rows: repeat(9, 9.8%);
+    }
+}
+
+@media (min-aspect-ratio: 4/3) and (min-width: 1200px) {
+    .grid-container {
+        width: 50vh;
+        height: 50vh;
+        grid-template-columns: repeat(9, 9.5%);
+        grid-template-rows: repeat(9, 9.5%);
+        box-shadow: .5vw .5vw 0 rgb(8, 85, 151);
+        border-radius: 1.5vh;
+        grid-gap: 7px;
+    }
+
+    .cell {
+        border-radius: .5vh;
+    }
+
+    .cell>input {
+        font-size: 2VW;
+    }
+
+
 }
 
 .left {

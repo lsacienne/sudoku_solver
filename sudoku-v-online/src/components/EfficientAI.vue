@@ -1,5 +1,5 @@
 <template>
-    <div class="first-ai">
+    <div class="efficient-ai">
         <SudokuGrid refs="sudokuGrid"></SudokuGrid>
         <button type="button" @click="startAI" class="validate">Solve the sudoku!</button>
         <div class="loading-screen" refs="loadingScreen" :class="{ hidden: !isScreenLoading }">
@@ -68,7 +68,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.first-ai {
+.efficient-ai {
     margin: 5%;
     display: flex;
     flex-direction: column;
@@ -134,6 +134,12 @@ export default defineComponent({
     100% {
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
+    }
+}
+
+@media (min-aspect-ratio: 4/3) and (min-width: 1200px) {
+    .validate {
+        width: 50vh;
     }
 }
 </style>

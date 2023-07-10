@@ -53,6 +53,13 @@ body {
     align-self: center;
     margin-top: 60px;
 }
+
+@media (min-aspect-ratio: 8/5) {
+
+    #app {
+        width: 60%;
+    }
+}
 </style>
 
 <style scoped>
