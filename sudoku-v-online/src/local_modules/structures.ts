@@ -40,7 +40,7 @@ export class Cell {
     }
 }
 
-class C {
+class CellStructure {
     index: number;
     cells: Array<Cell>;
 
@@ -54,33 +54,9 @@ class C {
     }
 }
 
-class L {
-    index: number;
-    cells: Array<Cell>;
-
-    constructor(index: number) {
-        this.index = index;
-        this.cells = [];
-    }
-
-    addCell(cell: Cell) {
-        this.cells.push(cell);
-    }
-}
-
-class S {
-    index: number;
-    cells: Array<Cell>;
-
-    constructor(index: number) {
-        this.index = index;
-        this.cells = [];
-    }
-
-    addCell(cell: Cell) {
-        this.cells.push(cell);
-    }
-}
+class C extends CellStructure { }
+class L extends CellStructure { }
+class S extends CellStructure { }
 
 export class Problem {
     cols: Array<C>;
@@ -162,27 +138,48 @@ export class Problem {
     }
 
     /* Constraints */
-    checkLine(index: number) {
+    checkLine(index: number, spValue?: number) {
         const line = this.lins.find(lin => lin.index === index)?.cells.map(cell => cell.value);
         const valuesCount = this.countValuesArray(line!!);
+        if (spValue !== undefined) {
+            const spValueCount = valuesCount.get(spValue);
+            if (spValueCount !== undefined && spValueCount > 1) {
+                return false;
+            }
+            return true;
+        }
         if (Array.from(valuesCount.values()).includes(2)) {
             return false;
         }
         return true;
     }
 
-    checkColumn(index: number) {
+    checkColumn(index: number, spValue?: number) {
         const column = this.cols.find(col => col.index === index)?.cells.map(cell => cell.value);
         const valuesCount = this.countValuesArray(column!!);
+        if (spValue !== undefined) {
+            const spValueCount = valuesCount.get(spValue);
+            if (spValueCount !== undefined && spValueCount > 1) {
+                return false;
+            }
+            return true;
+        }
         if (Array.from(valuesCount.values()).includes(2)) {
             return false;
         }
         return true;
     }
 
-    checkSquare(index: number) {
+    checkSquare(index: number, spValue?: number) {
         const square = this.squs.find(squ => squ.index === index)?.cells.map(cell => cell.value);
         const valuesCount = this.countValuesArray(square!!);
+        if (spValue !== undefined) {
+            const spValueCount = valuesCount.get(spValue);
+            if (spValueCount !== undefined && spValueCount > 1) {
+                return false;
+            }
+            return true;
+        }
         if (Array.from(valuesCount.values()).includes(2)) {
             return false;
         }
@@ -211,6 +208,27 @@ export class Problem {
             return true;
         }
         return false;
+    }
+
+    checkCellIsCorrect(cellId: number, cellValue: number) {
+        const linId = Math.floor(cellId / 9);
+        const colId = cellId % 9;
+        const squId = Math.floor(colId / 3) + 3 * Math.floor(linId / 3);
+
+        if (this.checkLine(linId, cellValue) && this.checkColumn(colId, cellValue) && this.checkSquare(squId, cellValue)) {
+            return true;
+        }
+        return false;
+    }
+
+    isCompletelyCorrect(): number[] {
+        const incorrectCells: number[] = [];
+        for (const cell of this.cells) {
+            if (cell.value !== null && !this.checkCellIsCorrect(cell.index, cell.value)) {
+                incorrectCells.push(cell.index);
+            }
+        }
+        return incorrectCells;
     }
 
     countValuesArray(arr: Array<(number | null)>): Map<number, number> {

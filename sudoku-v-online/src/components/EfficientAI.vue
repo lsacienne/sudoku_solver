@@ -16,7 +16,7 @@ import { defineComponent } from 'vue';
 import * as ai from '@/local_modules/ai';
 import { Problem } from '@/local_modules/structures';
 import { fillGrid } from '@/local_modules/analyze_grid';
-import { store } from './store';
+import { CellType, store } from './store';
 
 export default defineComponent({
     name: 'FirstAI',
@@ -29,12 +29,12 @@ export default defineComponent({
         SudokuGrid
     },
     methods: {
-        async runAI(inputArray: Array<string>) {
-            const problem: Problem = fillGrid(inputArray);
+
+        async runAI(inputProblem: Problem) {
             //problem.printDenseSolution();
             let toResolve = new Promise<Problem>((resolve, reject) => {
-                const firstCell = problem.globalUpdateScore();
-                const solution: Problem | null = ai.generateAndTest2(problem, firstCell);
+                const firstCell = inputProblem.globalUpdateScore();
+                const solution: Problem | null = ai.generateAndTest2(inputProblem, firstCell);
                 if (solution) {
                     resolve(solution);
                 } else {
@@ -46,20 +46,38 @@ export default defineComponent({
         startAI() {
             this.isScreenLoading = true;
             let gridContent = store.cells.map(cell => cell.value === "" ? "0" : cell.value.toString());
-            let promise = this.runAI(gridContent);
-
-            promise.then((solution) => {
-                solution.printDenseSolution();
-                this.fillCells(solution.getArrayOfValues());
+            const problem: Problem = fillGrid(gridContent);
+            const wrongCells = problem.isCompletelyCorrect();
+            if (wrongCells.length > 0) {
+                this.highlightWrongCells(wrongCells);
                 this.isScreenLoading = false;
-            });
-            promise.catch((e) => console.error(e));
+            } else {
+                let promise = this.runAI(problem);
+                promise.then((solution) => {
+                    solution.printDenseSolution();
+                    this.fillCells(solution.getArrayOfValues());
+                    this.isScreenLoading = false;
+                });
+                promise.catch((e) => console.error(e));
+            }
+
+        },
+        highlightWrongCells(wrongCellsIndex: Array<number>) {
+            for (const cell of store.cells) {
+                if (cell.index in wrongCellsIndex) {
+                    cell.isWrongValue = true;
+                } else {
+                    cell.isWrongValue = false;
+                }
+            }
         },
         fillCells(input: Array<number | "">) {
             for (let i = 0; i <= 80; ++i) {
                 store.cells[i] = {
                     index: i,
-                    value: input[i]
+                    value: input[i],
+                    type: store.cells[i].type === CellType.EMPTY ? CellType.COMPUTED : CellType.HARDCODED,
+                    isWrongValue: false
                 }
             }
         }

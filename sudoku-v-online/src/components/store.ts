@@ -1,9 +1,17 @@
 // store.js
 import { reactive } from 'vue'
 
-declare interface GraphicCell {
+export declare interface GraphicCell {
     index: number,
-    value: number | ""
+    value: number | "",
+    type: CellType,
+    isWrongValue: boolean
+}
+
+export enum CellType {
+    HARDCODED,
+    COMPUTED,
+    EMPTY
 }
 
 export const store = reactive({
