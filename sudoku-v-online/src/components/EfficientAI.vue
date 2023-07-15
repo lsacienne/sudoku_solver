@@ -16,7 +16,7 @@ import { defineComponent } from 'vue';
 import * as ai from '@/local_modules/ai';
 import { Problem } from '@/local_modules/structures';
 import { fillGrid } from '@/local_modules/analyze_grid';
-import { store } from './store';
+import { CellType, store } from './store';
 
 export default defineComponent({
     name: 'FirstAI',
@@ -76,7 +76,7 @@ export default defineComponent({
                 store.cells[i] = {
                     index: i,
                     value: input[i],
-                    reasignment: store.cells[i].reasignment + 1,
+                    type: store.cells[i].type === CellType.EMPTY ? CellType.COMPUTED : CellType.HARDCODED,
                     isWrongValue: false
                 }
             }

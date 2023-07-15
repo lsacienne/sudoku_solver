@@ -3,15 +3,15 @@
         <div class="cell" v-for="cell in  store.cells " :key="cell.index">
             <input type="number" min="1" max="9" :name="cell.index.toString()" :id="cell.index.toString()"
                 :value="cell.value"
-                @input="cell.value = (checkInput($event.target!.value) ? $event.target!.value : cell.value); cell.value = cell.value"
-                :class="{ wrongvalue: cell.isWrongValue }">
+                @input="cell.value = (checkInput($event.target!.value) ? $event.target!.value : cell.value); cell.value = cell.value; updateCellType(cell)"
+                :class="{ wrongvalue: cell.isWrongValue, computedvalue: isComputedValue(cell) }">
         </div>
     </div>
 </template>
 
 <script lang='ts'>
 import { defineComponent } from 'vue';
-import { GraphicCell, store } from '@/components/store'
+import { CellType, GraphicCell, store } from '@/components/store'
 
 export default defineComponent({
     name: 'SudokuGrid',
@@ -25,7 +25,7 @@ export default defineComponent({
             let newCell: GraphicCell = {
                 index: i,
                 value: "",
-                reasignment: 0,
+                type: CellType.EMPTY,
                 isWrongValue: false
 
             }
@@ -42,6 +42,16 @@ export default defineComponent({
                 return false;
             }
             return true;
+        },
+        updateCellType(cell: GraphicCell) {
+            if (cell.value === null) {
+                cell.type = CellType.EMPTY;
+            } else {
+                cell.type = CellType.HARDCODED;
+            }
+        },
+        isComputedValue(cell: GraphicCell) {
+            return cell.type === CellType.COMPUTED;
         }
     }
 });
@@ -85,6 +95,10 @@ export default defineComponent({
 .cell>input.wrongvalue {
     font-weight: bold;
     color: rgb(175, 51, 51);
+}
+
+.cell>input.computedvalue {
+    color: rgb(79, 133, 204);
 }
 
 @media(min-width: 500px) {
