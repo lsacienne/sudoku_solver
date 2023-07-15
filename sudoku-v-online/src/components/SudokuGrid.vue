@@ -1,21 +1,17 @@
 <template>
     <div class="grid-container">
-        <div class="cell" v-for="cell in store.cells" :key="cell.index">
+        <div class="cell" v-for="cell in  store.cells " :key="cell.index">
             <input type="number" min="1" max="9" :name="cell.index.toString()" :id="cell.index.toString()"
                 :value="cell.value"
-                @input="cell.value = (checkInput($event.target.value) ? $event.target.value : cell.value); cell.value = cell.value">
+                @input="cell.value = (checkInput($event.target!.value) ? $event.target!.value : cell.value); cell.value = cell.value"
+                :class="{ wrongvalue: cell.isWrongValue }">
         </div>
     </div>
 </template>
 
 <script lang='ts'>
 import { defineComponent } from 'vue';
-import { store } from '@/components/store'
-
-declare interface GraphicCell {
-    index: number,
-    value: number | ""
-}
+import { GraphicCell, store } from '@/components/store'
 
 export default defineComponent({
     name: 'SudokuGrid',
@@ -28,7 +24,10 @@ export default defineComponent({
         for (let i = 0; i <= 80; ++i) {
             let newCell: GraphicCell = {
                 index: i,
-                value: ""
+                value: "",
+                reasignment: 0,
+                isWrongValue: false
+
             }
             store.cells.push(newCell);
         }
@@ -81,6 +80,11 @@ export default defineComponent({
     color: rgb(1, 21, 39);
     background-color: rgba(0, 0, 0, 0);
     border: none;
+}
+
+.cell>input.wrongvalue {
+    font-weight: bold;
+    color: rgb(175, 51, 51);
 }
 
 @media(min-width: 500px) {
