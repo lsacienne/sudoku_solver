@@ -1,6 +1,6 @@
 <template>
     <div class="grid-container">
-        <div class="cell" v-for="cell in  store.cells " :key="cell.index">
+        <div class="cell" v-for="cell in  store.cells " :key="cell.index" :class="{ grey: isGreyBackground(cell) }">
             <input type="number" min="1" max="9" :name="cell.index.toString()" :id="cell.index.toString()"
                 :value="cell.value"
                 @input="cell.value = (checkInput($event.target!.value) ? $event.target!.value : cell.value); cell.value = cell.value; updateCellType(cell)"
@@ -52,6 +52,15 @@ export default defineComponent({
         },
         isComputedValue(cell: GraphicCell) {
             return cell.type === CellType.COMPUTED;
+        },
+        isGreyBackground(cell: GraphicCell) {
+            const linId = Math.floor(cell.index / 9);
+            const colId = cell.index % 9;
+            const squId = Math.floor(colId / 3) + 3 * Math.floor(linId / 3);
+            if (squId % 2 === 0) {
+                return false;
+            }
+            return true;
         }
     }
 });
@@ -84,6 +93,10 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
     font-size: 4vw;
+}
+
+.cell.grey {
+    background-color: hsl(0, 0%, 75%);
 }
 
 .cell>input {
