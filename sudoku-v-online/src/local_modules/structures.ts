@@ -40,7 +40,7 @@ export class Cell {
     }
 }
 
-class C {
+class CellStructure {
     index: number;
     cells: Array<Cell>;
 
@@ -54,33 +54,9 @@ class C {
     }
 }
 
-class L {
-    index: number;
-    cells: Array<Cell>;
-
-    constructor(index: number) {
-        this.index = index;
-        this.cells = [];
-    }
-
-    addCell(cell: Cell) {
-        this.cells.push(cell);
-    }
-}
-
-class S {
-    index: number;
-    cells: Array<Cell>;
-
-    constructor(index: number) {
-        this.index = index;
-        this.cells = [];
-    }
-
-    addCell(cell: Cell) {
-        this.cells.push(cell);
-    }
-}
+class C extends CellStructure { }
+class L extends CellStructure { }
+class S extends CellStructure { }
 
 export class Problem {
     cols: Array<C>;
