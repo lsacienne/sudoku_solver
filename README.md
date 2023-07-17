@@ -570,7 +570,7 @@ It exists a loads of strategies to solve sudoku. Some are really straight forwar
 
 These methods are really great for human beings but not so much for computers trying to solve CSP...
 
-Something AI makers is the **attribution of wight/score**. You find weights everywhere in this domain : 
+Something AI makers love is the **attribution of weight/score**. You find weights everywhere in this domain : 
 
 - One weights edges in graphs
 - Weights rules a neural network decision
