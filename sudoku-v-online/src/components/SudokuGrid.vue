@@ -115,7 +115,8 @@ export default defineComponent({
 }
 
 .cell>input.computedvalue {
-    color: rgb(79, 133, 204);
+    color: rgb(16, 108, 230);
+    font-weight: bold;
 }
 
 @media (min-aspect-ratio: 4/3) and (min-width: 1200px) {
@@ -134,8 +135,18 @@ export default defineComponent({
     .cell>input {
         font-size: 2VW;
     }
+}
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
+/* Firefox */
+input[type=number] {
+    appearance: textfield;
 }
 
 .left {

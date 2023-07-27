@@ -43,7 +43,7 @@ export default defineComponent({
             });
             return toResolve;
         },
-        startAI() {
+        async startAI() {
             this.isScreenLoading = true;
             let gridContent = store.cells.map(cell => cell.value === "" ? "0" : cell.value.toString());
             const problem: Problem = fillGrid(gridContent);
@@ -100,9 +100,9 @@ export default defineComponent({
     ;
     text-transform: uppercase;
     width: 90%;
-    height: 5vh;
+    height: 3rem;
     font-weight: 600;
-    font-size: 2vh;
+    font-size: 1.3rem;
 
 
     background-color: aliceblue;
