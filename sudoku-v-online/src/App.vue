@@ -1,5 +1,6 @@
 <template>
     <h1>Sudoku solver</h1>
+    <h2>Click the grid to fill it!</h2>
     <!-- <FirstAI></FirstAI> -->
     <EfficientAI></EfficientAI>
 </template>
@@ -66,5 +67,12 @@ body {
 h1 {
     font-family: Roboto-Mono-Italic, arial, sans-serif;
     font-weight: bold;
+    margin-bottom: .5rem;
+}
+
+h2 {
+    font-family: Roboto-Mono-Italic, arial, sans-serif;
+    font-weight: lighter;
+    margin-top: 0;
 }
 </style>
