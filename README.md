@@ -857,7 +857,7 @@ node index.js  0,25s user 0,03s system 173% cpu 0,162 total
 
 ## Conclusion
 
-You can access the final AI (and the previous one if you want) on this website : [Sudoku-v-Online](lsacienne.github.io/sudoku_solver).
+You can access the final AI (and the previous one if you want) on this website : [Sudoku-v-Online](https://lsacienne.github.io/sudoku_solver/).
 
 I am very proud of this AI, I wanted to realize it from a long time ago and I am very happy of the result. I hope this piece of code will inspire you ! 
 
